@@ -1,0 +1,3 @@
+[submodule "packages/tracker-emitter"]
+	path = packages/tracker-emitter
+	url = git@github.com:dburles/meteor-tracker-emitter.git
