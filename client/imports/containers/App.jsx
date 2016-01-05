@@ -41,7 +41,7 @@ class App extends Component {
 
   componentWillUnmount() {
     this.subscriptionEmitter.stop(handle => handle.stop());
-    this.tasksEmitter.stop(() => store.dispatch('setTodos', []));
+    this.tasksEmitter.stop(() => store.dispatch(setTodos([])));
     this.storeSubscriptions.forEach(stop => stop());
   }
 
