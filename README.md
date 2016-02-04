@@ -1,4 +1,4 @@
-# Meteor, Redux & Tracker Emitter example
+# Meteor, Redux & Conduit example
 
 Setup:
 
