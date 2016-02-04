@@ -5,43 +5,43 @@ import TodoList from '../components/TodoList.jsx';
 import { connect } from 'react-redux';
 import Todos from '../../../imports/collections/todos';
 import { setTodos, toggleReady } from '../actions';
+import { conduit } from 'meteor/dburles:conduit';
 
 class App extends Component {
   componentWillMount() {
     const { store } = this.context;
 
-    this.subscriptionEmitter = Tracker.emitter(
-      args => Meteor.subscribe('todos', args.limit),
-      handle => store.dispatch(toggleReady(handle.ready())),
-      () => {
+    this.subscriptionConduit = conduit
+      .input(() => {
         const { limit } = store.getState();
         return { limit };
-      }
-    );
+      })
+      .source(({ limit }) => Meteor.subscribe('todos', limit))
+      .output(source => store.dispatch(toggleReady(source.ready())));
 
-    this.tasksEmitter = Tracker.emitter(
-      args => {
+    this.tasksConduit = conduit
+      .input(() => {
+        const { hideCompleted } = store.getState();
+        return { hideCompleted };
+      })
+      .source(args => {
         const selector = args.hideCompleted
           ? { checked: { $ne: true }}
           : {};
         return Todos.find(selector, { sort: { createdAt: -1 }}).fetch();
-      },
-      response => store.dispatch(setTodos(response)),
-      () => {
-        const { hideCompleted } = store.getState();
-        return { hideCompleted };
-      }
-    );
+      })
+      .output(response => store.dispatch(setTodos(response)));
 
     this.storeSubscriptions = [
-      store.subscribe(this.subscriptionEmitter.update),
-      store.subscribe(this.tasksEmitter.update),
+      store.subscribe(this.subscriptionConduit.update),
+      store.subscribe(this.tasksConduit.update),
     ];
   }
 
   componentWillUnmount() {
-    this.subscriptionEmitter.stop(handle => handle.stop());
-    this.tasksEmitter.stop(() => store.dispatch('setTodos', []));
+    const { store } = this.context;
+    this.subscriptionConduit.stop(handle => handle.stop());
+    this.tasksConduit.stop(() => store.dispatch('setTodos', []));
     this.storeSubscriptions.forEach(stop => stop());
   }
 
