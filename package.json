@@ -19,12 +19,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dburles/redux-tracker-emitter-example.git"
+    "url": "git+https://github.com/dburles/condiut-example.git"
   },
   "author": "David Burles",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/dburles/redux-tracker-emitter-example/issues"
+    "url": "https://github.com/dburles/conduit-example/issues"
   },
-  "homepage": "https://github.com/dburles/redux-tracker-emitter-example#readme"
+  "homepage": "https://github.com/dburles/conduit-example#readme"
 }
